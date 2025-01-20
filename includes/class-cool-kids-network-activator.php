@@ -30,7 +30,5 @@ class Cool_Kids_Network_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-
 	}
-
 }

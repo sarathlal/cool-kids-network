@@ -1,5 +1,5 @@
-(function( $ ) {
-	'use strict';
+( function( $ ) {
+	"use strict";
 
 	/**
 	 * All of the code for your admin-facing JavaScript source
@@ -29,4 +29,4 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
-})( jQuery );
+}( jQuery ) );
