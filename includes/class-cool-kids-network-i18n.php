@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Define the internationalization functionality
  *
@@ -24,7 +23,7 @@
  * @subpackage Cool_Kids_Network/includes
  * @author     Sarathlal N <hello@sarathlal.com>
  */
-class Cool_Kids_Network_i18n {
+class Cool_Kids_Network_I18n {
 
 
 	/**
@@ -39,9 +38,5 @@ class Cool_Kids_Network_i18n {
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);
-
 	}
-
-
-
 }

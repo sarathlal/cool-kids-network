@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The plugin bootstrap file
  *
@@ -77,6 +76,5 @@ function run_cool_kids_network() {
 
 	$plugin = new Cool_Kids_Network();
 	$plugin->run();
-
 }
 run_cool_kids_network();
