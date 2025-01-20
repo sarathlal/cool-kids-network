@@ -78,3 +78,27 @@ function run_cool_kids_network() {
 	$plugin->run();
 }
 run_cool_kids_network();
+
+
+if ( ! function_exists( 'write_log' ) ) {
+	/**
+	 * Writes custom data to the WordPress debug.log file.
+	 *
+	 * This function checks if WP_DEBUG is enabled and writes the provided
+	 * data to the debug.log file. It handles arrays and objects by converting
+	 * them into a readable format.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param mixed $log The data to log. Can be a string, array, object, or any data type.
+	 */
+	function write_log( $log ) {
+		if ( true === WP_DEBUG ) {
+			if ( is_array( $log ) || is_object( $log ) ) {
+				error_log( print_r( $log, true ) ); // phpcs:ignore
+			} else {
+				error_log( $log ); // phpcs:ignore
+			}
+		}
+	}
+}
