@@ -166,6 +166,7 @@ class Cool_Kids_Network_Public {
 	public function render_register_form() {
 		?>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<input type="hidden" name="action" value="ckn_register">
 			<h3><?php esc_html_e( 'Register', 'cool-kids-network' ); ?></h3>
 			<p>
 				<label for="user_email"><?php esc_html_e( 'Email', 'cool-kids-network' ); ?></label>
@@ -178,7 +179,7 @@ class Cool_Kids_Network_Public {
 			<p>
 				<button type="submit" name="register_submit"><?php esc_html_e( 'Register', 'cool-kids-network' ); ?></button>
 			</p>
-			<?php wp_nonce_field( 'coll-kids-network-register' ); ?>
+			<?php wp_nonce_field( 'cool-kids-network-register' ); ?>
 		</form>
 		<?php
 	}
@@ -208,7 +209,7 @@ class Cool_Kids_Network_Public {
 			<p>
 				<button type="submit" name="login_submit"><?php esc_html_e( 'Login', 'cool-kids-network' ); ?></button>
 			</p>
-			<?php wp_nonce_field( 'coll-kids-network-login' ); ?>
+			<?php wp_nonce_field( 'cool-kids-network-login' ); ?>
 		</form>
 		<?php
 	}
@@ -230,7 +231,7 @@ class Cool_Kids_Network_Public {
 		if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['login_submit'] ) ) {
 
 			// Verify the nonce to ensure the request is valid.
-			if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'coll-kids-network-login' ) ) {
+			if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'cool-kids-network-login' ) ) {
 				wp_die( esc_html__( 'Security check failed!', 'cool-kids-network' ) );
 			}
 
@@ -256,10 +257,75 @@ class Cool_Kids_Network_Public {
 
 			if ( is_wp_error( $user_signon ) ) {
 				// Authentication failed.
-				wp_die( esc_html__( 'The password you entered is incorrect.', 'cool-kids-network' ), esc_html__( 'Login Failed', 'cool-kids-network' ), array( 'back_link' => true ) );
+				wp_die(
+					$user_signon->get_error_message(), // phpcs:ignore
+					esc_html__( 'Login Failed', 'cool-kids-network' ),
+					array( 'back_link' => true )
+				);
 			}
 
 			wp_safe_redirect( wp_get_referer() );
+			exit;
+		}
+	}
+
+	/**
+	 * Handles the user registration process for the plugin.
+	 *
+	 * This function processes the registration form submitted via POST. It performs
+	 * necessary validation, including nonce verification and duplicate email checks,
+	 * creates a new user account, and redirects the user to the referring page with
+	 * query parameters indicating the registration status.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 *
+	 * @throws WP_Error If the user registration process fails due to invalid data or
+	 *                  an existing user with the same email.
+	 */
+	public function register() {
+		if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['register_submit'] ) ) {
+
+			// Verify the nonce to ensure the request is valid.
+			if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'cool-kids-network-register' ) ) {
+				wp_die( esc_html__( 'Security check failed!', 'cool-kids-network' ) );
+			}
+
+			$email    = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
+			$password = isset( $_POST['user_password'] ) ? sanitize_text_field( wp_unslash( $_POST['user_password'] ) ) : '';
+
+			// Check if the email already exists.
+			if ( email_exists( $email ) ) {
+				wp_die(
+					esc_html__( 'The email address is already registered. Please use a different email or log in.', 'cool-kids-network' ),
+					esc_html__( 'Registration Error', 'cool-kids-network' ),
+					array( 'back_link' => true )
+				);
+			}
+
+			// Create the user.
+			$user_id = wp_create_user( $email, $password, $email ); // Using email as user name.
+
+			if ( is_wp_error( $user_id ) ) {
+				wp_die(
+					$user_id->get_error_message(), // phpcs:ignore
+					esc_html__( 'Registration Error', 'cool-kids-network' ),
+					array( 'back_link' => true )
+				);
+			}
+
+			$referer      = wp_get_referer(); // Get the referer URL.
+			$redirect_url = add_query_arg(
+				array(
+					'action'       => 'login',
+					'registration' => 'success',
+				),
+				$referer
+			);
+
+			// Safely redirect to the modified URL.
+			wp_safe_redirect( $redirect_url );
 			exit;
 		}
 	}
