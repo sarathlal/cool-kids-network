@@ -116,8 +116,7 @@ class Cool_Kids_Network_Public {
 
 		// Check if the user is logged in.
 		if ( is_user_logged_in() ) {
-			$current_user = wp_get_current_user();
-			return $current_user->display_name;
+			return $this->display_user_data();
 		}
 
 		// Determine the active tab based on the URL's 'action' parameter.
@@ -424,5 +423,39 @@ class Cool_Kids_Network_Public {
 		if ( $country ) {
 			update_user_meta( $user_id, 'country', sanitize_text_field( $country ) );
 		}
+	}
+
+	/**
+	 * Generates HTML to display user-specific data based on capabilities.
+	 *
+	 * This function retrieves and displays user-specific data depending on the logged-in user's
+	 * capabilities. The displayed data and its structure can vary based on the capabilities
+	 * assigned to the user.
+	 *
+	 * Key capabilities:
+	 * - `ckn_read`: Allows the user to view their own data.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string The generated HTML containing the user-specific data.
+	 */
+	private function display_user_data() {
+		$current_user = wp_get_current_user();
+		ob_start();
+
+		// Check if the user has the 'ckn_read' capability.
+		if ( current_user_can( 'ckn_read' ) ) { // phpcs:ignore
+			// Display own data.
+			?>
+			<h2><?php esc_html_e( 'Your details', 'cool-kids-network' ); ?></h2>
+			<p><strong><?php esc_html_e( 'First Name:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( get_user_meta( $current_user->ID, 'first_name', true ) ); ?></p>
+			<p><strong><?php esc_html_e( 'Last Name:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( get_user_meta( $current_user->ID, 'last_name', true ) ); ?></p>	        
+			<p><strong><?php esc_html_e( 'Country:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( get_user_meta( $current_user->ID, 'country', true ) ); ?></p>
+			<p><strong><?php esc_html_e( 'Email:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( $current_user->user_email ); ?></p>
+			<p><strong><?php esc_html_e( 'Role:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( implode( ', ', $current_user->roles ) ); ?></p>
+			<?php
+		}
+
+		return ob_get_clean();
 	}
 }
