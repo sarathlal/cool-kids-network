@@ -100,30 +100,32 @@ class Cool_Kids_Network_Public {
 
 		ob_start();
 		?>
-		<div class="cool-kids-network-tabs">
-			<!-- Tab Navigation -->
-			<ul class="tabs">
-				<li class="<?php echo ( 'login' === $active_tab ) ? 'active' : ''; ?>">
-					<a href="?action=login"><?php esc_html_e( 'Login', 'cool-kids-network' ); ?></a>
-				</li>
-				<li class="<?php echo ( 'register' === $active_tab ) ? 'active' : ''; ?>">
-					<a href="?action=register"><?php esc_html_e( 'Register', 'cool-kids-network' ); ?></a>
-				</li>
-			</ul>
+		<div class="cool-kids-network-wrap">
+			<div class="cool-kids-network-tabs">
+				<!-- Tab Navigation -->
+				<ul class="tabs">
+					<li class="<?php echo ( 'login' === $active_tab ) ? 'active' : ''; ?>">
+						<a href="?action=login"><?php esc_html_e( 'Login', 'cool-kids-network' ); ?></a>
+					</li>
+					<li class="<?php echo ( 'register' === $active_tab ) ? 'active' : ''; ?>">
+						<a href="?action=register"><?php esc_html_e( 'Register', 'cool-kids-network' ); ?></a>
+					</li>
+				</ul>
 
-			<!-- Tab Content -->
-			<div class="tab-content">
-				<?php if ( 'login' === $active_tab ) : ?>
-					<div id="login" class="tab-pane active">
-						<?php $this->render_login_form(); ?>
-					</div>
-				<?php elseif ( 'register' === $active_tab ) : ?>
-					<div id="register" class="tab-pane active">
-						<?php $this->render_register_form(); ?>
-					</div>
-				<?php endif; ?>
+				<!-- Tab Content -->
+				<div class="tab-content">
+					<?php if ( 'login' === $active_tab ) : ?>
+						<div id="login" class="tab-pane active">
+							<?php $this->render_login_form(); ?>
+						</div>
+					<?php elseif ( 'register' === $active_tab ) : ?>
+						<div id="register" class="tab-pane active">
+							<?php $this->render_register_form(); ?>
+						</div>
+					<?php endif; ?>
+				</div>
 			</div>
-		</div>	
+		</div>
 		<?php
 		return ob_get_clean();
 	}
@@ -139,9 +141,8 @@ class Cool_Kids_Network_Public {
 	 */
 	public function render_register_form() {
 		?>
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+		<form class="cool-kids-network-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="ckn_register">
-			<h3><?php esc_html_e( 'Register', 'cool-kids-network' ); ?></h3>
 			<p>
 				<label for="user_email"><?php esc_html_e( 'Email', 'cool-kids-network' ); ?></label>
 				<input type="email" id="user_email" name="user_email" required>
@@ -169,9 +170,8 @@ class Cool_Kids_Network_Public {
 	 */
 	public function render_login_form() {
 		?>
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+		<form class="cool-kids-network-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="ckn_login">
-			<h3><?php esc_html_e( 'Login', 'cool-kids-network' ); ?></h3>
 			<p>
 				<label for="user_email"><?php esc_html_e( 'Email', 'cool-kids-network' ); ?></label>
 				<input type="email" id="user_email" name="user_email" required>
