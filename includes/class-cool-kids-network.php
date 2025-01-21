@@ -77,6 +77,7 @@ class Cool_Kids_Network {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->define_api_hooks();
 	}
 
 	/**
@@ -119,6 +120,11 @@ class Cool_Kids_Network {
 		 * side of the site.
 		 */
 		require_once plugin_dir_path( __DIR__ ) . 'public/class-cool-kids-network-public.php';
+
+		/**
+		 * The class responsible to register REST route in the plugin
+		 */
+		require_once plugin_dir_path( __DIR__ ) . 'api/class-cool-kids-network-role-controller.php';
 
 		$this->loader = new Cool_Kids_Network_Loader();
 	}
@@ -171,6 +177,19 @@ class Cool_Kids_Network {
 		$this->loader->add_action( 'init', $plugin_public, 'register_short_code' );
 		$this->loader->add_action( 'admin_post_nopriv_ckn_login', $plugin_public, 'login' );
 		$this->loader->add_action( 'admin_post_nopriv_ckn_register', $plugin_public, 'register' );
+	}
+
+	/**
+	 * Register all REST route functionality
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function define_api_hooks() {
+
+		$api_controller = new Cool_Kids_Network_Role_Controller( $this->get_plugin_name(), $this->get_version() );
+
+		$this->loader->add_action( 'rest_api_init', $api_controller, 'register_routes' );
 	}
 
 	/**
