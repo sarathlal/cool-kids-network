@@ -89,6 +89,7 @@ class Cool_Kids_Network {
 	 * - Cool_Kids_Network_I18n. Defines internationalization functionality.
 	 * - Cool_Kids_Network_Admin. Defines all hooks for the admin area.
 	 * - Cool_Kids_Network_Public. Defines all hooks for the public side of the site.
+	 * - Cool_Kids_Network_Role_Controller. Rest route and related functionality for role update
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -155,9 +156,9 @@ class Cool_Kids_Network {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new Cool_Kids_Network_Admin( $this->get_plugin_name(), $this->get_version() );
-
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		// phpcs:ignore
+		// $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
+		// $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'init', $plugin_admin, 'custom_user_roles' );
 	}
 
@@ -173,7 +174,8 @@ class Cool_Kids_Network {
 		$plugin_public = new Cool_Kids_Network_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		// phpcs:ignore
+		// $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'init', $plugin_public, 'register_short_code' );
 		$this->loader->add_action( 'admin_post_nopriv_ckn_login', $plugin_public, 'login' );
 		$this->loader->add_action( 'admin_post_nopriv_ckn_register', $plugin_public, 'register' );
