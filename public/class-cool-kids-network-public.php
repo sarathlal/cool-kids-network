@@ -315,6 +315,13 @@ class Cool_Kids_Network_Public {
 				);
 			}
 
+			// Assign "Cool Kid" role to the user.
+			$user = new WP_User( $user_id );
+			$user->set_role( 'cool_kid' );
+
+			// Fetch additional data from the API and update user meta.
+			$this->update_fake_data( $user_id );
+
 			$referer      = wp_get_referer(); // Get the referer URL.
 			$redirect_url = add_query_arg(
 				array(
@@ -327,6 +334,95 @@ class Cool_Kids_Network_Public {
 			// Safely redirect to the modified URL.
 			wp_safe_redirect( $redirect_url );
 			exit;
+		}
+	}
+
+	/**
+	 * Fetches user data from the randomuser.me API and updates the user meta after ensuring uniqueness.
+	 *
+	 * This function ensures the combination of first name and last name is unique in the database.
+	 * If the combination already exists, it makes additional API requests until a unique combination is found.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $user_id The ID of the user to update.
+	 *
+	 * @return void
+	 */
+	public function update_fake_data( $user_id ) {
+		$api_url      = 'https://randomuser.me/api/';
+		$max_attempts = 20; // Limit the number of attempts to avoid infinite loops.
+		$attempts     = 0;
+
+		$first_name = '';
+		$last_name  = '';
+		$user_data  = array();
+
+		do {
+			$response = wp_safe_remote_get( $api_url );
+
+			if ( is_wp_error( $response ) ) {
+				write_log( 'Failed to fetch data from randomuser.me: ' . $response->get_error_message() );
+				return;
+			}
+
+			$body = wp_remote_retrieve_body( $response );
+			$data = json_decode( $body, true );
+
+			if ( empty( $data['results'][0] ) ) {
+				write_log( 'Invalid response from randomuser.me API.' );
+				return;
+			}
+
+			$user_data = $data['results'][0];
+
+			// Extract first name and last name.
+			$first_name = isset( $user_data['name']['first'] ) ? $user_data['name']['first'] : '';
+			$last_name  = isset( $user_data['name']['last'] ) ? $user_data['name']['last'] : '';
+
+			// Check if the combination already exists.
+			$existing_users = get_users(
+				array(
+					'meta_query' => array(  // phpcs:ignore
+						'relation' => 'AND',
+						array(
+							'key'   => 'first_name',
+							'value' => $first_name,
+						),
+						array(
+							'key'   => 'last_name',
+							'value' => $last_name,
+						),
+					),
+					'fields'     => 'ID',
+				)
+			);
+
+			++$attempts;
+
+			// Continue fetching if the combination exists.
+		} while ( ! empty( $existing_users ) && $attempts < $max_attempts );
+
+		// If we reached the max attempts and still found duplicates, log an error and return.
+		if ( $attempts >= $max_attempts ) {
+			write_log( 'Failed to generate a unique name after ' . $max_attempts . ' attempts.' );
+			return;
+		}
+
+		// Extract country.
+		$country = isset( $user_data['location']['country'] ) ? $user_data['location']['country'] : '';
+
+		// Update user meta.
+		if ( $first_name ) {
+			update_user_meta( $user_id, 'first_name', $first_name );
+		}
+
+		if ( $last_name ) {
+			update_user_meta( $user_id, 'last_name', $last_name );
+		}
+
+		if ( $country ) {
+			update_user_meta( $user_id, 'country', sanitize_text_field( $country ) );
 		}
 	}
 }
