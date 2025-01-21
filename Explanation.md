@@ -35,3 +35,23 @@ For the custom API endpoint, we can extend WP_REST_Controller.
 ![Register](docs/img/register.png)
 
 ![Login](docs/img/login.png)
+
+### Testing API endpoint
+
+	curl -X PUT http://localhost/wordpress/wp-json/cool-kids-network/v1/role \
+	    -u "admin:ZLAG gcHk e41I 37R9 Elmo wyxa" \
+	    -H "Content-Type: application/json" \
+	    -d '{
+	        "email": "sarathlal+1@gmail.com",
+	        "role": "coolest_kid"
+	    }'
+
+
+	curl -X PUT http://localhost/wordpress/wp-json/cool-kids-network/v1/role \
+	    -u "admin:ZLAG gcHk e41I 37R9 Elmo wyxa" \
+	    -H "Content-Type: application/json" \
+	    -d '{
+	        "first_name": "Alexandra",
+	        "last_name": "Jean",
+	        "role": "cool_kid"
+	    }'
