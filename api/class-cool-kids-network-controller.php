@@ -18,7 +18,7 @@
  * @subpackage Cool_Kids_Network/api
  * @author     Sarathlal N <hello@sarathlal.com>
  */
-class Cool_Kids_Network_Role_Controller extends WP_REST_Controller {
+class Cool_Kids_Network_Controller extends WP_REST_Controller {
 
 	/**
 	 * The ID of this plugin.

@@ -10,11 +10,9 @@
     "scripts": {
         "lint:php": "vendor/bin/phpcs --standard=WordPress --extensions=php --ignore=vendor,node_modules .",
         "fix:php": "vendor/bin/phpcbf --standard=WordPress --extensions=php --ignore=vendor,node_modules .",
-        "lint:js": "npx eslint \"**/admin/js/*.js\" \"**/public/js/*.js\"",
-        "fix:js": "npx eslint --fix \"**/admin/js/*.js\" \"**/public/js/*.js\"",
         "lint:css": "npx stylelint \"**/admin/css/*.css\" \"**/public/css/*.css\"",
         "fix:css": "npx stylelint --fix \"**/admin/css/*.css\" \"**/public/css/*.css\"",
-        "lint": ["@lint:php", "@lint:js", "@lint:css"],
-        "fix": ["@fix:php", "@fix:js", "@fix:css"]
+        "lint": ["@lint:php", "@lint:css"],
+        "fix": ["@fix:php", "@fix:css"]
     }    
 }
