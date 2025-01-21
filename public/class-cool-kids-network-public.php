@@ -195,6 +195,7 @@ class Cool_Kids_Network_Public {
 	public function render_login_form() {
 		?>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<input type="hidden" name="action" value="ckn_login">
 			<h3><?php esc_html_e( 'Login', 'cool-kids-network' ); ?></h3>
 			<p>
 				<label for="user_email"><?php esc_html_e( 'Email', 'cool-kids-network' ); ?></label>
@@ -210,5 +211,56 @@ class Cool_Kids_Network_Public {
 			<?php wp_nonce_field( 'coll-kids-network-login' ); ?>
 		</form>
 		<?php
+	}
+
+	/**
+	 * Handles the custom login functionality for the plugin.
+	 *
+	 * This function processes a login form submitted via POST, verifies the
+	 * provided nonce for security, authenticates the user using their email
+	 * and password, and logs them into the WordPress site. If the login
+	 * process fails at any stage, an appropriate error message is displayed.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 * @throws WP_Error Displays an error message and halts execution if login fails.
+	 */
+	public function login() {
+		if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['login_submit'] ) ) {
+
+			// Verify the nonce to ensure the request is valid.
+			if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ), 'coll-kids-network-login' ) ) {
+				wp_die( esc_html__( 'Security check failed!', 'cool-kids-network' ) );
+			}
+
+			$email    = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
+			$password = isset( $_POST['user_password'] ) ? sanitize_text_field( wp_unslash( $_POST['user_password'] ) ) : '';
+
+			// Find the user by email.
+			$user = get_user_by( 'email', $email );
+			if ( ! $user ) {
+				// User not found.
+				wp_die( esc_html__( 'Invalid email address. Please try again.', 'cool-kids-network' ), esc_html__( 'Login Failed', 'cool-kids-network' ), array( 'back_link' => true ) );
+			}
+
+			// Prepare credentials for wp_signon.
+			$creds = array(
+				'user_login'    => $user->user_login, // Use the username, not the email.
+				'user_password' => $password,
+				'remember'      => true, // Set to false if you don't want the user remembered.
+			);
+
+			// Attempt to sign the user in.
+			$user_signon = wp_signon( $creds, false );
+
+			if ( is_wp_error( $user_signon ) ) {
+				// Authentication failed.
+				wp_die( esc_html__( 'The password you entered is incorrect.', 'cool-kids-network' ), esc_html__( 'Login Failed', 'cool-kids-network' ), array( 'back_link' => true ) );
+			}
+
+			wp_safe_redirect( wp_get_referer() );
+			exit;
+		}
 	}
 }
