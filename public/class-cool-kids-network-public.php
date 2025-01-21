@@ -101,6 +101,12 @@ class Cool_Kids_Network_Public {
 		ob_start();
 		?>
 		<div class="cool-kids-network-wrap">
+
+			<?php  // phpcs:ignore
+			if ( ! empty( $_GET['registration'] ) && 'success' === $_GET['registration'] ) { ?>
+				<p class="success message"><?php esc_html_e( 'Registration successful! Please log in to access your account.', 'cool-kids-network' ); ?></p>
+			<?php } ?>
+
 			<div class="cool-kids-network-tabs">
 				<!-- Tab Navigation -->
 				<ul class="tabs">

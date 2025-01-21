@@ -72,6 +72,10 @@
 	text-transform: uppercase;
 }
 
+.cool-kids-network-wrap .success.message {
+	color: #004600;
+}
+
 .cool-kids-network-details-wrap table {
 	width: 100%;
 	border-collapse: collapse;
