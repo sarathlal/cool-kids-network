@@ -418,25 +418,45 @@ class Cool_Kids_Network_Public {
 		$current_user = wp_get_current_user();
 		ob_start();
 		?>
-		<div>
+		<div class="cool-kids-network-details-wrap">
 			<?php
 			// Check if the user has the 'ckn_read' capability.
 			if ( current_user_can( 'ckn_read' ) ) { // phpcs:ignore
 				// Display own data.
 				?>
 				<h2><?php esc_html_e( 'Your details', 'cool-kids-network' ); ?></h2>
-				<p><strong><?php esc_html_e( 'First Name:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( get_user_meta( $current_user->ID, 'first_name', true ) ); ?></p>
-				<p><strong><?php esc_html_e( 'Last Name:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( get_user_meta( $current_user->ID, 'last_name', true ) ); ?></p>	        
-				<p><strong><?php esc_html_e( 'Country:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( get_user_meta( $current_user->ID, 'country', true ) ); ?></p>
-				<p><strong><?php esc_html_e( 'Email:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( $current_user->user_email ); ?></p>
-				<p><strong><?php esc_html_e( 'Role:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( implode( ', ', $current_user->roles ) ); ?></p>
+				<table>
+					<tbody>
+						<tr>
+							<th><?php esc_html_e( 'First Name', 'cool-kids-network' ); ?></th>
+							<td><?php echo esc_html( get_user_meta( $current_user->ID, 'first_name', true ) ); ?></td>
+						</tr>
+						<tr>
+							<th><?php esc_html_e( 'Last Name', 'cool-kids-network' ); ?></th>
+							<td><?php echo esc_html( get_user_meta( $current_user->ID, 'last_name', true ) ); ?></td>
+						</tr>
+						<tr>
+							<th><?php esc_html_e( 'Country', 'cool-kids-network' ); ?></th>
+							<td><?php echo esc_html( get_user_meta( $current_user->ID, 'country', true ) ); ?></td>
+						</tr>
+						<tr>
+							<th><?php esc_html_e( 'Email', 'cool-kids-network' ); ?></th>
+							<td><?php echo esc_html( $current_user->user_email ); ?></td>
+						</tr>
+						<tr>
+							<th><?php esc_html_e( 'Role', 'cool-kids-network' ); ?></th>
+							<td><?php echo esc_html( implode( ', ', $current_user->roles ) ); ?></td>
+						</tr>
+					</tbody>
+				</table>
+
 				<?php
 			}
 
 			// Check if the user has the 'ckn_view_others_data' capability to display other users' data.
 			if ( current_user_can( 'ckn_view_others_data' ) ) { // phpcs:ignore
 				?>
-				<h2><?php esc_html_e( 'Other Cool Kids:', 'cool-kids-network' ); ?></h2>
+				<h2><?php esc_html_e( 'Other Cool Kids', 'cool-kids-network' ); ?></h2>
 				<?php
 				$user_query = new WP_User_Query(
 					array(
