@@ -442,20 +442,79 @@ class Cool_Kids_Network_Public {
 	private function display_user_data() {
 		$current_user = wp_get_current_user();
 		ob_start();
-
-		// Check if the user has the 'ckn_read' capability.
-		if ( current_user_can( 'ckn_read' ) ) { // phpcs:ignore
-			// Display own data.
-			?>
-			<h2><?php esc_html_e( 'Your details', 'cool-kids-network' ); ?></h2>
-			<p><strong><?php esc_html_e( 'First Name:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( get_user_meta( $current_user->ID, 'first_name', true ) ); ?></p>
-			<p><strong><?php esc_html_e( 'Last Name:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( get_user_meta( $current_user->ID, 'last_name', true ) ); ?></p>	        
-			<p><strong><?php esc_html_e( 'Country:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( get_user_meta( $current_user->ID, 'country', true ) ); ?></p>
-			<p><strong><?php esc_html_e( 'Email:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( $current_user->user_email ); ?></p>
-			<p><strong><?php esc_html_e( 'Role:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( implode( ', ', $current_user->roles ) ); ?></p>
+		?>
+		<div>
 			<?php
-		}
+			// Check if the user has the 'ckn_read' capability.
+			if ( current_user_can( 'ckn_read' ) ) { // phpcs:ignore
+				// Display own data.
+				?>
+				<h2><?php esc_html_e( 'Your details', 'cool-kids-network' ); ?></h2>
+				<p><strong><?php esc_html_e( 'First Name:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( get_user_meta( $current_user->ID, 'first_name', true ) ); ?></p>
+				<p><strong><?php esc_html_e( 'Last Name:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( get_user_meta( $current_user->ID, 'last_name', true ) ); ?></p>	        
+				<p><strong><?php esc_html_e( 'Country:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( get_user_meta( $current_user->ID, 'country', true ) ); ?></p>
+				<p><strong><?php esc_html_e( 'Email:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( $current_user->user_email ); ?></p>
+				<p><strong><?php esc_html_e( 'Role:', 'cool-kids-network' ); ?></strong> <?php echo esc_html( implode( ', ', $current_user->roles ) ); ?></p>
+				<?php
+			}
 
+			// Check if the user has the 'ckn_view_others_data' capability to display other users' data.
+			if ( current_user_can( 'ckn_view_others_data' ) ) { // phpcs:ignore
+				?>
+				<h2><?php esc_html_e( 'Other Cool Kids:', 'cool-kids-network' ); ?></h2>
+				<?php
+				$user_query = new WP_User_Query(
+					array(
+						'exclude'  => array( $current_user->ID ), // Exclude the logged-in user.
+						'role__in' => array( 'cool_kid', 'cooler_kid', 'coolest_kid' ), // Include specific roles.
+					)
+				);
+
+				$all_users = $user_query->get_results();
+
+				if ( ! empty( $all_users ) ) {
+					?>
+					<table class="cool-kids-network-table">
+						<thead>
+							<tr>
+								<th><?php esc_html_e( 'First Name', 'cool-kids-network' ); ?></th>
+								<th><?php esc_html_e( 'Last Name', 'cool-kids-network' ); ?></th>
+								<th><?php esc_html_e( 'Country', 'cool-kids-network' ); ?></th>
+								<?php if ( current_user_can( 'ckn_view_protected_data' ) ) {  // phpcs:ignore ?>
+									<th><?php esc_html_e( 'Email', 'cool-kids-network' ); ?></th>
+									<th><?php esc_html_e( 'Role', 'cool-kids-network' ); ?></th>
+								<?php } ?>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach ( $all_users as $user ) { ?>
+								<tr>
+									<?php
+									$first_name = get_user_meta( $user->ID, 'first_name', true );
+									$last_name  = get_user_meta( $user->ID, 'last_name', true );
+									$country    = get_user_meta( $user->ID, 'country', true );
+									?>
+									<td><?php echo esc_html( $first_name ); ?></td>
+									<td><?php echo esc_html( $last_name ); ?></td>
+									<td><?php echo esc_html( $country ); ?></td>
+									<?php if ( current_user_can( 'ckn_view_protected_data' ) ) {  // phpcs:ignore ?>
+										<td><?php echo esc_html( $user->user_email ); ?></td>
+										<td><?php echo esc_html( implode( ', ', $user->roles ) ); ?></td>
+									<?php } ?>
+								</tr>
+							<?php } ?>
+						</tbody>
+					</table>
+					<?php
+				} else {
+					?>
+					<p><?php echo esc_html__( 'No users found matching the criteria.', 'cool-kids-network' ); ?></p>
+					<?php
+				}
+			}
+			?>
+		</div>
+		<?php
 		return ob_get_clean();
 	}
 }
