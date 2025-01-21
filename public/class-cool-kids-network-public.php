@@ -244,7 +244,15 @@ class Cool_Kids_Network_Public {
 				);
 			}
 
-			wp_safe_redirect( wp_get_referer() );
+			$referer = wp_get_referer();
+
+			// List of query keys to remove.
+			$keys_to_remove = array( 'action', 'registration' );
+
+			// Remove the specified query arguments.
+			$clean_url = remove_query_arg( $keys_to_remove, $referer );
+
+			wp_safe_redirect( esc_url( $clean_url ) );
 			exit;
 		}
 	}
