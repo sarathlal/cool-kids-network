@@ -456,6 +456,46 @@ class Cool_Kids_Network_Public {
 			<?php
 		}
 
+	    // Check if the user has the 'ckn_view_others_data' capability to display other users' data.
+	    if (current_user_can('ckn_view_others_data')) {
+	        ?>
+	        <h2><?php esc_html_e('Other Cool Kids:', 'cool-kids-network'); ?></h2>
+	        <ul>
+	            <?php
+	            $user_query = new WP_User_Query(array(
+	                'exclude' => array($current_user->ID), // Exclude the logged-in user
+	                'role__in' => array('cool_kid', 'cooler_kid', 'coolest_kid'), // Include specific roles
+	            ));
+
+	            $all_users = $user_query->get_results();
+
+	            foreach ($all_users as $user) {
+	                $first_name = get_user_meta($user->ID, 'first_name', true);
+	                $last_name  = get_user_meta($user->ID, 'last_name', true);
+	                $country    = get_user_meta($user->ID, 'country', true);
+	                ?>
+	                <li>
+	                    <p><strong><?php esc_html_e('Name:', 'cool-kids-network'); ?></strong> <?php echo esc_html($first_name . ' ' . $last_name); ?></p>
+	                    <p><strong><?php esc_html_e('Country:', 'cool-kids-network'); ?></strong> <?php echo esc_html($country); ?></p>
+
+	                    <?php if (current_user_can('ckn_view_protected_data')) : ?>
+	                        <!-- Coolest Kid: Display all details -->
+	                        <p><strong><?php esc_html_e('Email:', 'cool-kids-network'); ?></strong> <?php echo esc_html($user->user_email); ?></p>
+	                        <p><strong><?php esc_html_e('Role:', 'cool-kids-network'); ?></strong> <?php echo esc_html(implode(', ', $user->roles)); ?></p>
+	                    <?php else : ?>
+	                        <!-- Cooler Kid: Restrict certain fields -->
+	                        <p><?php esc_html_e('Email: Restricted', 'cool-kids-network'); ?></p>
+	                        <p><?php esc_html_e('Role: Restricted', 'cool-kids-network'); ?></p>
+	                    <?php endif; ?>
+	                </li>
+	                <hr>
+	                <?php
+	            }
+	            ?>
+	        </ul>
+	        <?php
+	    }		
+
 		return ob_get_clean();
 	}
 }
