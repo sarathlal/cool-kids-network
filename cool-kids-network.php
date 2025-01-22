@@ -93,7 +93,7 @@ if ( ! function_exists( 'write_log' ) ) {
 	 * @param mixed $log The data to log. Can be a string, array, object, or any data type.
 	 */
 	function write_log( $log ) {
-		if ( true === WP_DEBUG ) {
+		if ( true === WP_DEBUG && true === WP_DEBUG_LOG ) {
 			if ( is_array( $log ) || is_object( $log ) ) {
 				error_log( print_r( $log, true ) ); // phpcs:ignore
 			} else {
