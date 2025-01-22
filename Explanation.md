@@ -41,7 +41,7 @@ For the custom API endpoint, we can extend WP_REST_Controller.
 
 # How to use the plugin
 
-You can download the latest version of plugin from [GitHub repo](https://github.com/sarathlal/cool-kids-network/releases){:target="_blank"}.
+You can download the latest version of plugin from [GitHub repo](https://github.com/sarathlal/cool-kids-network/releases).
 
 ## Shortcode Documentation
 
@@ -85,7 +85,7 @@ https://yourwebsite.com/wp-json/cool-kids-network/v1
 ```
 #### Endpoint
 ```
-POST /role
+/role
 ```
 
 Updates the role of a user based on their email or a combination of first and last names. Only users with the `edit_users` capability can access this endpoint.
