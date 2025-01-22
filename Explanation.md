@@ -105,7 +105,7 @@ Updates the role of a user based on their email or a combination of first and la
 
 1. **By Email**:
    ```
-	curl -X PUT https://yourwebsite.com/wordpress/wp-json/cool-kids-network/v1/role \
+	curl -X PUT https://yourwebsite.com/wp-json/cool-kids-network/v1/role \
 	    -u "admin:ZLAG gcHk e41I 37R9 Elmo wyxa" \
 	    -H "Content-Type: application/json" \
 	    -d '{
@@ -116,7 +116,7 @@ Updates the role of a user based on their email or a combination of first and la
 
 2. **By First and Last Name**:
    ```
-	curl -X PUT https://yourwebsite.com/wordpress/wp-json/cool-kids-network/v1/role \
+	curl -X PUT https://yourwebsite.com/wp-json/cool-kids-network/v1/role \
 	    -u "admin:ZLAG gcHk e41I 37R9 Elmo wyxa" \
 	    -H "Content-Type: application/json" \
 	    -d '{
@@ -176,20 +176,20 @@ This endpoint requires the user to be logged in and have the `edit_users` capabi
 
 ### Bash script with WP CLI to create 100 users with role "cool_kid"
 
-     ```
-    for i in $(seq 1 100); do
-        username="user${i}"
-        email="user${i}@example.com"
-        first_name="First${i}"
-        last_name="Last${i}"
-        country="India"
+```
+for i in $(seq 1 100); do
+    username="user${i}"
+    email="user${i}@example.com"
+    first_name="First${i}"
+    last_name="Last${i}"
+    country="India"
 
-        # Create user
-        wp user create "$username" "$email" --role=cooler_kid --user_pass="password${i}"
+    # Create user
+    wp user create "$username" "$email" --role=cooler_kid --user_pass="password${i}"
 
-        # Add custom user meta
-        wp user meta update "$username" first_name "$first_name"
-        wp user meta update "$username" last_name "$last_name"
-        wp user meta update "$username" country "$country"
-    done
-     ```
+    # Add custom user meta
+    wp user meta update "$username" first_name "$first_name"
+    wp user meta update "$username" last_name "$last_name"
+    wp user meta update "$username" country "$country"
+done
+ ```
