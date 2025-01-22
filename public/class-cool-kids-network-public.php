@@ -296,7 +296,7 @@ class Cool_Kids_Network_Public {
 			$user_id = wp_create_user( $email, $password, $email ); // Using email as user name.
 
 			if ( is_wp_error( $user_id ) ) {
-				write_log('Registration Error');
+				write_log( 'Registration Error' );
 				write_log($user_id->get_error_message()); // phpcs:ignore
 				wp_die(
 					$user_id->get_error_message(), // phpcs:ignore
