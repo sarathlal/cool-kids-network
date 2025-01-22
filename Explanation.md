@@ -172,3 +172,24 @@ Updates the role of a user based on their email or a combination of first and la
 #### Authorization
 This endpoint requires the user to be logged in and have the `edit_users` capability.
 
+# Notes
+
+### Bash script with WP CLI to create 100 users with role "cool_kid"
+
+     ```
+    for i in $(seq 1 100); do
+        username="user${i}"
+        email="user${i}@example.com"
+        first_name="First${i}"
+        last_name="Last${i}"
+        country="India"
+
+        # Create user
+        wp user create "$username" "$email" --role=cooler_kid --user_pass="password${i}"
+
+        # Add custom user meta
+        wp user meta update "$username" first_name "$first_name"
+        wp user meta update "$username" last_name "$last_name"
+        wp user meta update "$username" country "$country"
+    done
+     ```
