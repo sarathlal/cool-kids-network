@@ -18,6 +18,25 @@
 	margin: 0;
 }
 
+.cool-kids-network-details-wrap .paginate {
+	margin-top: 40px;
+	text-align: center;
+}
+
+.cool-kids-network-details-wrap .paginate a {
+	border: 1px solid #d0d0d0;
+	margin: 0 5px;
+	padding: 3px 11px;
+	text-decoration: none;
+	text-decoration-thickness: auto;
+	border-radius: 2px;
+	background-color: #f0f0f0;
+}
+
+.cool-kids-network-details-wrap .paginate a.active {
+	background-color: #fff;
+}
+
 .cool-kids-network-tabs .tabs li {
 	margin: 0;
 	cursor: pointer;
