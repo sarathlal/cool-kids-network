@@ -429,7 +429,11 @@ class Cool_Kids_Network_Public {
 	 * @return string The generated HTML containing the user-specific data.
 	 */
 	private function display_user_data() {
-		$current_user = wp_get_current_user();
+		$current_user   = wp_get_current_user();
+		$users_per_page = 20; // Number of users per page.
+		// phpcs:ignore
+		$paged          = isset( $_GET['page_num'] ) ? absint( $_GET['page_num'] ) : 1; // Get the current page from query parameter.
+
 		ob_start();
 		?>
 		<div class="cool-kids-network-details-wrap">
@@ -476,10 +480,16 @@ class Cool_Kids_Network_Public {
 					array(
 						'exclude'  => array( $current_user->ID ), // Exclude the logged-in user.
 						'role__in' => array( 'cool_kid', 'cooler_kid', 'coolest_kid' ), // Include specific roles.
+						'number'   => $users_per_page, // Users per page.
+						'paged'    => $paged, // Current page.
+						'orderby'  => 'user_registered', // Order by registration date.
+						'order'    => 'ASC', // Ascending order.
 					)
 				);
 
-				$all_users = $user_query->get_results();
+				$all_users   = $user_query->get_results();
+				$total_users = $user_query->get_total();
+				$total_pages = ceil( $total_users / $users_per_page );
 
 				if ( ! empty( $all_users ) ) {
 					?>
@@ -489,14 +499,14 @@ class Cool_Kids_Network_Public {
 								<th><?php esc_html_e( 'First Name', 'cool-kids-network' ); ?></th>
 								<th><?php esc_html_e( 'Last Name', 'cool-kids-network' ); ?></th>
 								<th><?php esc_html_e( 'Country', 'cool-kids-network' ); ?></th>
-								<?php if ( current_user_can( 'ckn_view_protected_data' ) ) {  // phpcs:ignore ?>
+								<?php if ( current_user_can( 'ckn_view_protected_data' ) ) :  // phpcs:ignore ?>
 									<th><?php esc_html_e( 'Email', 'cool-kids-network' ); ?></th>
 									<th><?php esc_html_e( 'Role', 'cool-kids-network' ); ?></th>
-								<?php } ?>
+								<?php endif; ?>
 							</tr>
 						</thead>
 						<tbody>
-							<?php foreach ( $all_users as $user ) { ?>
+							<?php foreach ( $all_users as $user ) : ?>
 								<tr>
 									<?php
 									$first_name = get_user_meta( $user->ID, 'first_name', true );
@@ -506,17 +516,29 @@ class Cool_Kids_Network_Public {
 									<td><?php echo esc_html( $first_name ); ?></td>
 									<td><?php echo esc_html( $last_name ); ?></td>
 									<td><?php echo esc_html( $country ); ?></td>
-									<?php if ( current_user_can( 'ckn_view_protected_data' ) ) {  // phpcs:ignore ?>
+									<?php if ( current_user_can( 'ckn_view_protected_data' ) ) :  // phpcs:ignore ?>
 										<td><?php echo esc_html( $user->user_email ); ?></td>
 										<td><?php echo esc_html( implode( ', ', $user->roles ) ); ?></td>
-									<?php } ?>
+									<?php endif; ?>
 								</tr>
-							<?php } ?>
+							<?php endforeach; ?>
 						</tbody>
 					</table>
-					<?php
-				} else {
-					?>
+
+					<?php if ( $total_pages > 1 ) : ?>
+						<div class="paginate">
+
+							<?php for ( $i = 1; $i <= $total_pages; $i++ ) : ?>
+								<a href="?page_num=<?php echo absint( $i ); ?>" 
+									class="<?php echo ( $i === $paged ) ? 'active' : ''; ?>">
+									<?php echo absint( $i ); ?>
+								</a>
+							<?php endfor; ?>
+
+						</div>
+					<?php endif; ?>
+
+				<?php } else { ?>
 					<p><?php echo esc_html__( 'No users found matching the criteria.', 'cool-kids-network' ); ?></p>
 					<?php
 				}
