@@ -215,8 +215,9 @@ class Cool_Kids_Network_Public {
 				wp_die( esc_html__( 'Security check failed!', 'cool-kids-network' ) );
 			}
 
-			$email    = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
-			$password = isset( $_POST['user_password'] ) ? sanitize_text_field( wp_unslash( $_POST['user_password'] ) ) : '';
+			$email = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
+			// Skipped sanitization on password field to ensure original password. Function wp_signon internnaly sanitize and validate password data & so it's okay to skip.
+			$password = isset( $_POST['user_password'] ) ? wp_unslash( $_POST['user_password'] ) : ''; // phpcs:ignore
 
 			// Find the user by email.
 			$user = get_user_by( 'email', $email );
@@ -280,8 +281,9 @@ class Cool_Kids_Network_Public {
 				wp_die( esc_html__( 'Security check failed!', 'cool-kids-network' ) );
 			}
 
-			$email    = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
-			$password = isset( $_POST['user_password'] ) ? sanitize_text_field( wp_unslash( $_POST['user_password'] ) ) : '';
+			$email = isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '';
+			// Skipped sanitization on password field to ensure original password. Function wp_create_user internnaly sanitize and validate password data & so it's okay to skip.
+			$password = isset( $_POST['user_password'] ) ? wp_unslash( $_POST['user_password'] ) : ''; // phpcs:ignore
 
 			// Check if the email already exists.
 			if ( email_exists( $email ) ) {
@@ -297,7 +299,7 @@ class Cool_Kids_Network_Public {
 
 			if ( is_wp_error( $user_id ) ) {
 				write_log( 'Registration Error' );
-				write_log($user_id->get_error_message()); // phpcs:ignore
+				write_log( $user_id->get_error_message() ); // phpcs:ignore
 				wp_die(
 					$user_id->get_error_message(), // phpcs:ignore
 					esc_html__( 'Registration Error', 'cool-kids-network' ),
