@@ -105,7 +105,7 @@ Updates the role of a user based on their email or a combination of first and la
 
 1. **By Email**:
    ```
-	curl -X PUT https://yourwebsite.com/wordpress/wp-json/cool-kids-network/v1/role \
+	curl -X PUT https://yourwebsite.com/wp-json/cool-kids-network/v1/role \
 	    -u "admin:ZLAG gcHk e41I 37R9 Elmo wyxa" \
 	    -H "Content-Type: application/json" \
 	    -d '{
@@ -116,7 +116,7 @@ Updates the role of a user based on their email or a combination of first and la
 
 2. **By First and Last Name**:
    ```
-	curl -X PUT https://yourwebsite.com/wordpress/wp-json/cool-kids-network/v1/role \
+	curl -X PUT https://yourwebsite.com/wp-json/cool-kids-network/v1/role \
 	    -u "admin:ZLAG gcHk e41I 37R9 Elmo wyxa" \
 	    -H "Content-Type: application/json" \
 	    -d '{
